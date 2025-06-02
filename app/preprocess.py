@@ -23,7 +23,4 @@ def download_nltk_data():
 
 
 def extract_keywords(text):
-    tokens = word_tokenize(text.lower())
-    stop_words = set(stopwords.words('english'))
-    keywords = [word for word in tokens if word not in stop_words and word.isalnum()]
-    return keywords
+    return [word.lower() for word in text.split() if len(word) > 3]
