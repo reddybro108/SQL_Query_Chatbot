@@ -44,10 +44,8 @@ def init_db():
         conn.commit()
         print(f"Inserted {total_records} records into employees.db")
 
-
     conn.close()
     print(f"Inserted {total_records} records into employees.db")
-
 
 if __name__ == "__main__":
     init_db()
