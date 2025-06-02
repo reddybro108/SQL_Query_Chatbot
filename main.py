@@ -4,14 +4,12 @@ from model import generate_sql_query, execute_query
 
 app = FastAPI()
 
-class Query(BaseModel):
-    user_input: str
-
-
 @app.get("/")
 def read_root():
-    return {"message": "Welcome to the SQL Query Chatbot!"}
+    return {"message": "Welcome to the SQL Query Chatbot API"}
 
+class Query(BaseModel):
+    user_input: str
 
 @app.post("/query/")
 def process_query(query: Query):

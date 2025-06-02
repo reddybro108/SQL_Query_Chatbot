@@ -7,7 +7,6 @@ def generate_sql_query(user_input):
     where_clause = ""
     order_by_clause = ""
 
-    # Simple rule-based parsing
     if "salary" in keywords and any(word in keywords for word in ["above", "greater", "more"]):
         for i, word in enumerate(keywords):
             if word in ["above", "greater", "more"] and i + 1 < len(keywords) and keywords[i + 1].isdigit():
