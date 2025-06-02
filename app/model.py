@@ -1,5 +1,5 @@
 import sqlite3
-from preprocess import extract_keywords
+from app.preprocess import extract_keywords
 
 
 def generate_sql_query(user_input):
