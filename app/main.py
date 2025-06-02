@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from model import generate_sql_query, execute_query
+from app.model import generate_sql_query, execute_query
 
 app = FastAPI()
 
