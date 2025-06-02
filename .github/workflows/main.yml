@@ -44,9 +44,11 @@ jobs:
       run: |
         python app/init_db.py
     - name: Run tests
+      env:
+        PYTHONPATH: ${{ github.workspace }}
       run: |
-        pip install pytest
-        pytest tests/ --verbose
+        pip install -r requirements.txt
+        pytest
   build-and-push:
     runs-on: ubuntu-latest
     needs: test
