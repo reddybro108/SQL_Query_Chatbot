@@ -1,5 +1,11 @@
-__pycache__/
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
 sqlenv/
-.pytest_cache/
+*.log
+.git
+.github
 nltk_data/
-*.db
+employees.db
