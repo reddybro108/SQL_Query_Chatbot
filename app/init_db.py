@@ -42,10 +42,11 @@ def init_db():
             VALUES (?, ?, ?, ?)
         ''', employees)
         conn.commit()
-        print(f"Inserted {total_records} records into employees.db")
+        print(f"Inserted records {start} to {end}")
 
     conn.close()
     print(f"Inserted {total_records} records into employees.db")
+
 
 if __name__ == "__main__":
     init_db()
