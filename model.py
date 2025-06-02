@@ -1,6 +1,7 @@
 import sqlite3
 from preprocess import extract_keywords
 
+
 def generate_sql_query(user_input):
     keywords = extract_keywords(user_input)
     select_clause = "SELECT * FROM employees"
@@ -24,8 +25,9 @@ def generate_sql_query(user_input):
     query = f"{select_clause} {where_clause} {order_by_clause}".strip()
     return query
 
+
 def execute_query(query):
-    conn = sqlite3.connect('employees.db')
+    conn = sqlite3.connect("employees.db")
     cursor = conn.cursor()
     try:
         cursor.execute(query)
