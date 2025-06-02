@@ -1,11 +1,15 @@
-# tests/test_api.py
-from app.main import app
-from fastapi.testclient import TestClient
+# app/main.py
+from fastapi import FastAPI
+from app.model import generate_sql_query, execute_query
 
-client = TestClient(app)
+app = FastAPI()
 
+@app.get("/")
+async def root():
+    return {"message": "Hello, World!"}
 
-def test_root():
-    response = client.get("/")
-    assert response.status_code == 200
-    assert response.json() == {"message": "Hello, World!"}
+@app.post("/query/")
+async def query(text: str):
+    sql_query = generate_sql_query(text)
+    result = execute_query(sql_query)
+    return {"query": sql_query, "result": result}
