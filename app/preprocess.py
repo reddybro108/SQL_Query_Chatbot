@@ -1,7 +1,6 @@
 import nltk
 import os
-from nltk.tokenize import word_tokenize
-from nltk.corpus import stopwords
+
 
 nltk_data_path = os.path.join(os.path.dirname(__file__), 'nltk_data')
 nltk.data.path.append(nltk_data_path)

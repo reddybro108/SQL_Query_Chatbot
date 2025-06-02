@@ -19,3 +19,4 @@ def get_db_connection():
         return connection
     except pymysql.MySQLError as e:
         raise Exception(f"Database connection failed: {str(e)}")
+    
