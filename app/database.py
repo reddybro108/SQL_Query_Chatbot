@@ -1,6 +1,5 @@
 # app/database.py
 import os
-from typing import Optional
 
 import pymysql
 from pymysql.cursors import DictCursor
