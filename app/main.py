@@ -12,7 +12,7 @@ async def root():
 
 
 class QueryRequest(BaseModel):
-    text: str
+    query: str
 
 
 @app.post("/query/")
