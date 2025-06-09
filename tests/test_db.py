@@ -1,5 +1,6 @@
 from app.database import get_connection
 
+
 def test_db_connection():
     """Test connection to the database."""
     conn = None
