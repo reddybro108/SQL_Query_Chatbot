@@ -13,7 +13,6 @@ DB_CONFIG = {
 
 
 def get_db_connection():
-    """Establish and return a MySQL database connection."""
     try:
         connection = pymysql.connect(**DB_CONFIG)
         return connection

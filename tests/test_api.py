@@ -1,17 +1,20 @@
-# app/main.py
-from fastapi import FastAPI
-from app.model import generate_sql_query, execute_query
+# tests/test_api.py
+from app.main import app
+from fastapi.testclient import TestClient
 
-app = FastAPI()
+client = TestClient(app)
 
+def test_root():
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json() == {"message": "Welcome to the SQL Query Chatbot API"}
 
-@app.get("/")
-async def root():
-    return {"message": "Hello, World!"}
+def test_query_post():
+    response = client.post("/query/", json={"user_input": "select users with age over 30"})
+    assert response.status_code == 200
+    assert "sql_query" in response.json()
+    assert "results" in response.json()
 
-
-@app.post("/query/")
-async def query(text: str):
-    sql_query = generate_sql_query(text)
-    result = execute_query(sql_query)
-    return {"query": sql_query, "result": result}
+def test_invalid_query():
+    response = client.post("/query/", json={"user_input": "invalid query"})
+    assert response.status_code == 200
