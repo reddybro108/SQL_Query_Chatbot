@@ -11,4 +11,5 @@ def test_db_connection():
             result = cursor.fetchone()
         assert result == {"1": 1}
     finally:
-        conn.close()
+        if conn:
+            conn.close()

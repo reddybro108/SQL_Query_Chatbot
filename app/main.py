@@ -7,8 +7,8 @@ app = FastAPI()
 
 
 @app.get("/")
-def root():
-    return {"message": "Welcome to the SQL Query Chatbot!"}
+async def root():
+    return {"message": "Welcome to the SQL Query Chatbot API"}
 
 
 class QueryRequest(BaseModel):
