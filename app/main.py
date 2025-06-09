@@ -9,6 +9,11 @@ class QueryRequest(BaseModel):
     text: str
 
 
+@app.get("/")
+def root():
+    return {"message": "Welcome to the SQL Query Chatbot!"}
+
+
 @app.post("/query/")
 def run_query(request: QueryRequest):
     sql = generate_sql_query(request.text)
