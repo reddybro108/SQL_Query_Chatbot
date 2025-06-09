@@ -4,8 +4,10 @@ from app.model import generate_sql_query, execute_query
 
 app = FastAPI()
 
+
 class QueryRequest(BaseModel):
     text: str
+
 
 @app.post("/query/")
 def run_query(request: QueryRequest):
