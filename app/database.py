@@ -1,7 +1,7 @@
 import pymysql
 from pymysql.cursors import DictCursor
 
-# Database configuration (replace with your actual credentials)
+# Database configuration (replace with your actual credentials).
 DB_CONFIG = {
     "host": "localhost",
     "user": "root",
