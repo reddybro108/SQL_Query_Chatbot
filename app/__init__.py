@@ -1,1 +1,1 @@
-# “This is a package, you can import from it.”
+__version__ = "1.0.0"\n

@@ -1,7 +1,6 @@
 import os
 import nltk
 import pymysql
-from pymysql.cursors import DictCursor
 
 from app.preprocess import extract_keywords
 from app.database import get_db_connection
