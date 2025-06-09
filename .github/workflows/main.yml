@@ -10,22 +10,19 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install flake8
-
-      - name: Run linting
-        run: |
-          flake8 . --max-line-length=120 --exclude=sqlenv,nltk_data
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8
+    - name: Run linting
+      run: |
+        flake8 . --max-line-length=120 --exclude=sqlenv,nltk_data
 
   test:
     runs-on: ubuntu-latest
@@ -34,73 +31,82 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          MYSQL_DATABASE: ${{ secrets.DB_NAME }}
+          MYSQL_ROOT_PASSWORD: Amolreddy@108
+          MYSQL_DATABASE: amoldb
         ports:
           - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping --silent"
           --health-interval=10s
-          --health-timeout=5s
-          --health-retries=3
-
+          --health-timeout=10s
+          --health-retries=5
+          --name mysql
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
-
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Download NLTK data
-        run: |
-          python -c "import nltk; nltk.download('punkt', download_dir='nltk_data'); nltk.download('punkt_tab', download_dir='nltk_data'); nltk.download('stopwords', download_dir='nltk_data')"
-
-      - name: Initialize database
-        env:
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_USER: root
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-        run: |
-          python app/init_db.py
-
-      - name: Run tests
-        env:
-          PYTHONPATH: ${{ github.workspace }}
-          DB_HOST: 127.0.0.1
-          DB_PORT: 3306
-          DB_USER: root
-          DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-        run: |
-          pytest
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.13'
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Install MySQL client
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y mysql-client
+    - name: Verify MySQL service
+      run: |
+        mysqladmin -h mysql -P 3306 -u root -pAmolreddy@108 status
+      env:
+        DB_HOST: mysql
+        DB_PORT: 3306
+        DB_USER: root
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+        DB_NAME: amoldb
+    - name: Download NLTK data
+      run: |
+        python -c "import nltk; nltk.download('punkt', download_dir='nltk_data'); nltk.download('punkt_tab', download_dir='nltk_data'); nltk.download('stopwords', download_dir='nltk_data')"
+    - name: Initialize database
+      env:
+        DB_HOST: mysql
+        DB_PORT: 3306
+        DB_USER: root
+        DB_PASSWORD: Amolreddy@108
+        DB_NAME: amoldb
+      run: |
+        python app/init_db.py
+    - name: Run tests
+      env:
+        PYTHONPATH: ${{ github.workspace }}
+        DB_HOST: mysql
+        DB_PORT: 3306
+        DB_USER: root
+        DB_PASSWORD: Amolreddy@108
+        DB_NAME: amoldb
+      run: |
+        pytest
+    - name: Check MySQL logs on failure
+      if: failure()
+      run: |
+        docker logs $(docker ps -q --filter "ancestor=mysql:8.0")
 
   build-and-push:
     runs-on: ubuntu-latest
     needs: test
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Log in to Docker Hub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.DOCKER_USERNAME }}
-          password: ${{ secrets.DOCKER_PASSWORD }}
-
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v6
-        with:
-          context: .
-          push: true
-          tags: reddybro108/sql-query-chatbot:latest
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v3
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v6
+      with:
+        context: .
+        push: true
+        tags: reddybro108/sql-query-chatbot:latest
