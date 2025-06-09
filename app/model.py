@@ -1,56 +1,69 @@
-import os
-import nltk
 import pymysql
 
+from app.database import get_connection
 from app.preprocess import extract_keywords
-from app.database import get_db_connection
 
 
-nltk_data_path = os.path.join(os.path.dirname(__file__), 'nltk_data')
-nltk.data.path.append(nltk_data_path)
+def sanitize_input(text: str) -> str:
+    """
+    Remove potentially harmful SQL keywords to prevent injection.
+
+    Args:
+        text: Input query string.
+
+    Returns:
+        Sanitized query string.
+
+    Raises:
+        ValueError: If restricted keywords are found.
+    """
+    dangerous_keywords = ["DROP", "DELETE", "TRUNCATE", "ALTER", "INSERT", "UPDATE"]
+    text_upper = text.upper()
+    for keyword in dangerous_keywords:
+        if keyword in text_upper:
+            raise ValueError(f"Invalid query: contains restricted keyword '{keyword}'")
+    return text.lower()
 
 
-def download_nltk_data():
-    try:
-        nltk.data.find('tokenizers/punkt')
-    except LookupError:
-        nltk.download('punkt', download_dir=nltk_data_path)
-    try:
-        nltk.data.find('corpora/stopwords')
-    except LookupError:
-        nltk.download('stopwords', download_dir=nltk_data_path)
+def generate_sql_query(text: str) -> str:
+    """
+    Generate SQL query from natural language input.
 
+    Args:
+        text: Natural language query.
 
-def generate_sql_query(text):
-    text = text.lower()
+    Returns:
+        SQL query string.
+    """
+    text = sanitize_input(text)
     keywords = extract_keywords(text)
-
-    if "employees" in keywords:
-        query = "SELECT * FROM employees"
-        conditions = []
-
-        if "research" in keywords:
-            conditions.append("department = 'Research'")
-        if "top" in keywords and "salary" in keywords:
-            order_by = " ORDER BY salary DESC LIMIT 10"
-        else:
-            order_by = ""
-
-        if conditions:
-            query += " WHERE " + " AND ".join(conditions)
-        query += order_by
-
-        return query
-
-    return "SELECT * FROM users"  # fallback
+    if "users" in keywords and "age" in keywords:
+        return "SELECT * FROM users WHERE age > 30"
+    elif "products" in keywords and "price" in keywords:
+        return "SELECT * FROM products WHERE price < 100"
+    elif "orders" in keywords:
+        return "SELECT * FROM orders"
+    return "SELECT * FROM users"
 
 
-def execute_query(query):
-    conn = get_db_connection()
+def execute_query(query: str) -> list:
+    """
+    Execute SQL query and return results.
+
+    Args:
+        query: SQL query string.
+
+    Returns:
+        List of query results.
+
+    Raises:
+        Exception: If query execution fails.
+    """
+    conn = get_connection()
     try:
         with conn.cursor() as cursor:
             cursor.execute(query)
-            result = cursor.fetchone()
+            result = cursor.fetchall()
         conn.commit()
         return result
     except pymysql.MySQLError as e:

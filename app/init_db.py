@@ -1,6 +1,7 @@
-import sqlite3
-from faker import Faker
 import random
+import sqlite3
+
+from faker import Faker
 
 
 def init_db():
@@ -8,21 +9,32 @@ def init_db():
     fake = Faker()
 
     # Define possible departments
-    departments = ['HR', 'IT', 'Finance', 'Sales', 'Marketing', 'Operations', 'Research', 'Support']
+    departments = [
+        "HR",
+        "IT",
+        "Finance",
+        "Sales",
+        "Marketing",
+        "Operations",
+        "Research",
+        "Support",
+    ]
 
     # Connect to SQLite database
-    conn = sqlite3.connect('employees.db')
+    conn = sqlite3.connect("employees.db")
     cursor = conn.cursor()
 
     # Create employees table
-    cursor.execute('''
+    cursor.execute(
+        """
         CREATE TABLE IF NOT EXISTS employees (
             id INTEGER PRIMARY KEY,
             name TEXT NOT NULL,
             department TEXT,
             salary REAL
         )
-    ''')
+    """
+    )
 
     # Generate 50,000 employee records in batches
     batch_size = 1000
@@ -37,10 +49,13 @@ def init_db():
             employees.append((i, name, department, salary))
 
         # Insert batch
-        cursor.executemany('''
+        cursor.executemany(
+            """
             INSERT OR REPLACE INTO employees (id, name, department, salary)
             VALUES (?, ?, ?, ?)
-        ''', employees)
+        """,
+            employees,
+        )
         conn.commit()
         print(f"Inserted records {start} to {end}")
 
