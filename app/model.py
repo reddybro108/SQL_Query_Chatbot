@@ -1,12 +1,26 @@
-import sys
 import os
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-from app.preprocess import extract_keywords, download_nltk_data
-from app.database import get_db_connection
+import nltk
 import pymysql
+from pymysql.cursors import DictCursor
 
-def extract_keywords(text):
-    return [word.lower() for word in text.split() if len(word) > 3]
+from app.preprocess import extract_keywords
+from app.database import get_db_connection
+
+
+nltk_data_path = os.path.join(os.path.dirname(__file__), 'nltk_data')
+nltk.data.path.append(nltk_data_path)
+
+
+def download_nltk_data():
+    try:
+        nltk.data.find('tokenizers/punkt')
+    except LookupError:
+        nltk.download('punkt', download_dir=nltk_data_path)
+    try:
+        nltk.data.find('corpora/stopwords')
+    except LookupError:
+        nltk.download('stopwords', download_dir=nltk_data_path)
+
 
 def generate_sql_query(text):
     text = text.lower()
@@ -32,7 +46,6 @@ def generate_sql_query(text):
     return "SELECT * FROM users"  # fallback
 
 
-
 def execute_query(query):
     conn = get_db_connection()
     try:
@@ -45,16 +58,3 @@ def execute_query(query):
         raise Exception(f"Query execution failed: {str(e)}")
     finally:
         conn.close()
-
-
-if __name__ == "__main__":
-    download_nltk_data()
-    test_query = "SELECT * FROM employees"
-    try:
-        result = execute_query(test_query)
-        print(result)
-    except Exception as e:
-        print(f"Error: {e}")
-
-query='SELECT * FROM employees'
-print(execute_query(query))

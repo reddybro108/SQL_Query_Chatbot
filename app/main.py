@@ -15,3 +15,4 @@ def run_query(request: QueryRequest):
         "query": sql,
         "result": result
     }
+"
