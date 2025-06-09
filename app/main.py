@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+import pymysql
 from app.database import get_connection  # Assuming this is where process_query or similar is defined
 
 app = FastAPI()
 
 
 class QueryRequest(BaseModel):
-    query: str
+    text: str
 
 
 def generate_sql_query(user_input: str) -> str:
