@@ -4,8 +4,10 @@ from app.database import get_connection  # Assuming this is where process_query 
 
 app = FastAPI()
 
+
 class QueryRequest(BaseModel):
     query: str
+
 
 def generate_sql_query(user_input: str) -> str:
     # Replace with your query processing logic
@@ -17,9 +19,11 @@ def generate_sql_query(user_input: str) -> str:
         return "SELECT * FROM users WHERE department = 'research'"
     return user_input  # Placeholder; replace with actual logic
 
+
 @app.get("/")
 async def root():
     return {"message": "Welcome to the SQL Query Chatbot API"}
+
 
 @app.post("/query/")
 async def run_query(request: QueryRequest):

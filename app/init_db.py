@@ -34,5 +34,6 @@ def init_db():
     finally:
         conn.close()
 
+
 if __name__ == "__main__":
     init_db()
