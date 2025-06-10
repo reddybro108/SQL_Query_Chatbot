@@ -10,7 +10,7 @@ class QueryRequest(BaseModel):
 
 
 def generate_sql_query(user_input: str) -> str:
-        # Simplified; replace with NLTK-based logic
+    """Simplified; replace with NLTK-based logic"""
     if "invalid" in user_input.lower():
         raise ValueError("Invalid query provided")
     if "research department" in user_input.lower():
@@ -37,4 +37,3 @@ async def run_query(request: QueryRequest):
             conn.close()
     except Exception as e:
         return {"error": f"Query failed: {str(e)}"}
-    

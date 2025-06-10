@@ -1,5 +1,3 @@
-# tests/test_db.py
-import pytest
 from app.database import get_connection
 
 
