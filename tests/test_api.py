@@ -1,3 +1,5 @@
+# tests/test_api.py
+import pytest
 from fastapi.testclient import TestClient
 from app.main import app
 
@@ -5,14 +7,12 @@ client = TestClient(app)
 
 
 def test_root():
-    """Test the root endpoint."""
     response = client.get("/")
     assert response.status_code == 200
     assert response.json() == {"message": "Welcome to the SQL Query Chatbot API"}
 
 
 def test_query_post():
-    """Test valid query processing."""
     response = client.post(
         "/query/", json={"query": "SELECT * FROM users WHERE department = 'research'"}
     )
@@ -21,7 +21,6 @@ def test_query_post():
 
 
 def test_invalid_query():
-    """Test handling of invalid query."""
     response = client.post("/query/", json={"query": "invalid query"})
     assert response.status_code == 200
     assert "error" in response.json()
