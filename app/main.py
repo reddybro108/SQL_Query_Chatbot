@@ -6,11 +6,11 @@ app = FastAPI()
 
 
 class QueryRequest(BaseModel):
-    query: str
+    query: str  # Ensure this matches Postman request body
 
 
 def generate_sql_query(user_input: str) -> str:
-    # Placeholder; replace with your query processing logic
+    # Simplified; replace with NLTK-based logic
     if "invalid" in user_input.lower():
         raise ValueError("Invalid query provided")
     if "research department" in user_input.lower():
@@ -26,7 +26,7 @@ async def root():
 @app.post("/query/")
 async def run_query(request: QueryRequest):
     try:
-        sql_query = generate_sql_query(request.query)  # Use request.query
+        sql_query = generate_sql_query(request.query)
         conn = get_connection()
         try:
             with conn.cursor() as cursor:

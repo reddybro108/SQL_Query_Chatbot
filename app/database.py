@@ -1,22 +1,13 @@
-# app/database.py
 import os
-
 import pymysql
 from pymysql.cursors import DictCursor
 
 
 def get_connection() -> pymysql.connections.Connection:
-    """Establish a connection to the MySQL database.
-
-    Returns:
-        pymysql.connections.Connection: Active database connection.
-
-    Raises:
-        Exception: If connection fails due to MySQL error.
-    """
+    """Establish a connection to the MySQL database."""
     config = {
-        "host": os.getenv("DB_HOST", "127.0.0.1"),
-        "port": int(os.getenv("DB_PORT", 3307)),
+        "host": os.getenv("DB_HOST", "127.0.0.1"),  # Local default
+        "port": int(os.getenv("DB_PORT", 3307)),     # Local port
         "user": os.getenv("DB_USER", "root"),
         "password": os.getenv("DB_PASSWORD", "Amolreddy@108"),
         "database": os.getenv("DB_NAME", "amoldb"),

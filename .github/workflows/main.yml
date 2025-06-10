@@ -31,7 +31,7 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_ROOT_PASSWORD: Amolreddy@108
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
           MYSQL_DATABASE: amoldb
         ports:
           - 3306:3306
@@ -59,7 +59,7 @@ jobs:
     - name: Wait for MySQL service
       run: |
         for i in {1..30}; do
-          if mysqladmin -h mysql -P 3306 -u root -pAmolreddy@108 ping --silent; then
+          if mysqladmin -h mysql -P 3306 -u root -p${{ secrets.DB_PASSWORD }} ping --silent; then
             echo "MySQL is up"
             break
           fi
@@ -70,16 +70,24 @@ jobs:
         DB_HOST: mysql
         DB_PORT: 3306
         DB_USER: root
-        DB_PASSWORD: Amolreddy@108
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         DB_NAME: amoldb
+    - name: Debug MySQL connectivity
+      run: |
+        ping -c 4 mysql || echo "Ping to mysql failed"
+        nslookup mysql || echo "nslookup failed"
+        netstat -tuln | grep 3306 || echo "No process listening on 3306"
+      env:
+        DB_HOST: mysql
+        DB_PORT: 3306
     - name: Verify MySQL service
       run: |
-        mysqladmin -h mysql -P 3306 -u root -pAmolreddy@108 status
+        mysqladmin -h mysql -P 3306 -u root -p${{ secrets.DB_PASSWORD }} status
       env:
         DB_HOST: mysql
         DB_PORT: 3306
         DB_USER: root
-        DB_PASSWORD: Amolreddy@108
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         DB_NAME: amoldb
     - name: Download NLTK data
       run: |
@@ -89,7 +97,7 @@ jobs:
         DB_HOST: mysql
         DB_PORT: 3306
         DB_USER: root
-        DB_PASSWORD: Amolreddy@108
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         DB_NAME: amoldb
       run: |
         python app/init_db.py
@@ -99,7 +107,7 @@ jobs:
         DB_HOST: mysql
         DB_PORT: 3306
         DB_USER: root
-        DB_PASSWORD: Amolreddy@108
+        DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
         DB_NAME: amoldb
       run: |
         pytest
