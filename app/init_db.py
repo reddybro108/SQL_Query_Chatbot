@@ -2,6 +2,7 @@ import os
 import pymysql
 from pymysql.cursors import DictCursor
 
+
 def init_db():
     config = {
         "host": os.getenv("DB_HOST", "127.0.0.1"),
@@ -31,6 +32,7 @@ def init_db():
             conn.commit()
     finally:
         conn.close()
+
 
 if __name__ == "__main__":
     init_db()

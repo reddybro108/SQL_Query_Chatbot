@@ -17,9 +17,11 @@ def generate_sql_query(user_input: str) -> str:
         return "SELECT * FROM users WHERE department = 'research'"
     return user_input
 
+
 @app.get("/")
 async def root():
     return {"message": "Welcome to the SQL Query Chatbot API"}
+
 
 @app.post("/query/")
 async def run_query(request: QueryRequest):
